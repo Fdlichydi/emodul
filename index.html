@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Modul Merakit PC</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            text-align: left;
+            /* Rata kiri-kanan untuk teks */
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        h1,
+        h2 {
+            color: #ff7e5f;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .quiz-question h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background: #ff7e5f;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #feb47b;
+        }
+
+        .img-container {
+            text-align: center;
+            /* Rata tengah gambar */
+            margin: 20px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 0 auto;
+            /* Pusatkan gambar */
+        }
+
+        .quiz-question {
+            margin: 20px 0;
+        }
+
+        .quiz-question input {
+            margin-right: 10px;
+        }
+
+        .cover-page {
+            text-align: center;
+            background: #fff;
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cover-page h1 {
+            font-size: 36px;
+            color: #ff7e5f;
+            margin-bottom: 20px;
+        }
+
+        .cover-page h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .cover-page p {
+            font-size: 18px;
+            color: #555;
+        }
+
+        .cover-page img {
+            width: 300px;
+            /* Ukuran gambar bisa disesuaikan */
+            margin: 20px auto;
+            display: block;
+            /* Pusatkan gambar */
+        }
+    </style>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 7; // Update totalPages to include the results page
+
+        function showPage(pageNumber) {
+            for (let i = 1; i <= totalPages; i++) {
+                document.getElementById(`page${i}`).classList.remove('active');
+            }
+            document.getElementById(`page${pageNumber}`).classList.add('active');
+            document.getElementById('prevButton').style.display = pageNumber === 1 ? 'none' : 'inline-block';
+        }
+
+        function nextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        }
+
+        function calculateQuizScore() {
+            let score = 0;
+            const totalQuestions = 5;
+            const correctAnswers = [
+                'a', 'b', 'c', 'c', 'b'
+            ];
+
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = document.querySelector(`input[name="question${i}"]:checked`);
+                if (userAnswer && userAnswer.value === correctAnswers[i - 1]) {
+                    score += 20;
+                }
+            }
+            return score;
+        }
+
+        function checkQuiz() {
+            const score = calculateQuizScore();
+            localStorage.setItem('quizScore', score); // Save the score to localStorage
+
+            if (score >= 80) {
+                showPage(totalPages); // Go to results page
+            } else {
+                showPage(totalPages); // Go to results page anyway
+            }
+        }
+
+
+        function displayQuizResult() {
+            const score = localStorage.getItem('quizScore');
+            if (score) {
+                document.getElementById('resultScore').innerText = `Nilai Anda: ${score}`;
+                if (score < 80) {
+                    document.getElementById('resultMessage').innerText = 'Nilai Anda kurang dari 80. Silakan coba lagi.';
+                } else {
+                    document.getElementById('resultMessage').innerText = '';
+                }
+            } else {
+                document.getElementById('resultScore').innerText = 'Nilai tidak ditemukan.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayQuizResult();
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div id="page1" class="page cover-page active">
+            <h1>Merakit PC (Personal Komputer)</h1>
+            <img src="images/cover.png" alt="Cover Image">
+            <h2>Disusun oleh Meli</h2>
+            <p>Selamat datang di e-modul tentang merakit komputer pribadi. Modul ini akan membawa Anda melalui proses
+                perakitan PC dari awal hingga akhir dengan panduan langkah-demi-langkah.</p>
+            <button onclick="nextPage()">Mulai</button>
+        </div>
+
+        <div id="page2" class="page">
+            <h1>A. Dasar-Dasar Komputer</h1>
+            <h2>1. Pengertian Komputer</h2>
+            <p>Komputer adalah perangkat elektronik yang memanipulasi informasi atau data. Komputer mampu menyimpan,
+                mengambil, dan mengolah data. Anda mungkin telah mengetahui bahwa Anda dapat menggunakan komputer untuk
+                mengetik dokumen, mengirim email, bermain game, dan menjelajah Web. Anda juga dapat menggunakannya untuk
+                mengubah atau membuat spreadsheet, presentasi, dan bahkan video.</p>
+            <h2>2. Perangkat Keras Komputer dan Perangkat Lunak</h2>
+            <p>Perangkat keras adalah komponen komputer yang memiliki struktur fisik, seperti keyboard atau mouse.
+                Selain itu, perangkat keras juga mencakup semua komponen internal komputer, yang dapat Anda lihat pada
+                gambar di bawah ini.</p>
+            <div class="img-container">
+                <img src="images/motherboard.jpg" alt="Motherboard">
+            </div>
+            <p>Perangkat lunak adalah sekelompok instruksi atau perintah yang menugaskan atau memberi perintah kepada
+                perangkat keras tentang apa yang harus dilakukan dan bagaimana melakukannya. Contoh perangkat lunak
+                seperti web browser, permainan, dan pengolah kata. Gambar di bawah ini merupakan gambar dari perangkat
+                lunak Microsoft PowerPoint, yang digunakan untuk membuat presentasi.</p>
+            <div class="img-container">
+                <img src="images/powerpoint.jpg" alt="PowerPoint">
+            </div>
+            <button id="prevButton" onclick="prevPage()" style="display:none;">Previous</button>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
+        <div id="page3" class="page">
+            <h1>3. Macam-Macam Komputer</h1>
+            <p>a. Komputer Desktop</p>
+            <div class="img-container">
+                <img src="images/desktop.jpg" alt="desktop">
+            </div>
+            <p>Banyak orang menggunakan komputer desktop di kantor, rumah, dan sekolah. Komputer desktop dirancang untuk
+                ditempatkan di atas meja.</p>
+            <p>b. Komputer Laptop</p>
+            <div class="img-container">
+                <img src="images/laptop.jpg" alt="laptop">
+            </div>
+            <p>Laptop adalah komputer dengan sumber daya listrik berupa baterai dimana laptop lebih portabel dari
+                desktop yang memudahkan Anda untuk menggunakannya di mana saja.</p>
+            <p>c. Komputer Tablet</p>
+            <div class="img-container">
+                <img src="images/tablet.jpg" alt="tablet">
+            </div>
+            <p>Tablet adalah komputer yang bahkan lebih portabel dari laptop. Tablet menggunakan layar sentuh sebagai
+                pengganti keyboard dan mouse untuk mengetik dan navigasi.</p>
+            <p>d. Komputer Server</p>
+            <div class="img-container">
+                <img src="images/server.jpg" alt="server">
+            </div>
+            <p>Server adalah sebuah komputer yang mengolah permintaan-permintaan informasi dari komputer lainnya yang
+                terhubung dengannya pada suatu jaringan komputer.</p>
+            <button id="prevButton" onclick="prevPage()">Previous</button>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
+        <div id="page4" class="page">
+            <h1>B. Arsitektur dan Organisasi Komputer</h1>
+            <h2>1. Pengertian Arsitektur Komputer</h2>
+            <p>Arsitektur komputer adalah struktur, organisasi, serta implementasi yang mendefinisikan berbagai penataan
+                bagian-bagian serta interaksi yang terjadi antarbagian komputer untuk menghasilkan suatu proses kerja
+                komputer yang sesuai dengan tujuannya baik dari sisi atribut eksekusi logis, set instruksi, jumlah bit
+                yang digunakan, dan aspek serta atribut teknis komputer lainnya.</p>
+            <h2>2. Arsitektur von Neumann</h2>
+            <p>Arsitektur Von Neumann membagi komputer menjadi 4 bagian, yakni sebagai berikut.</p>
+            <p>a. Input (Masukan): Bagian input atau masukan yang berfungsi untuk memasukkan perintah ke dalam komputer.
+            </p>
+            <p>b. Central Processing Unit (CPU): Melakukan pemrosesan sesuai dengan perintah yang telah dimasukkan.</p>
+            <p>c. Memory: Berfungsi sebagai penyimpan data-data yang menjadi bahan maupun hasil pemrosesan.</p>
+            <p>d. Output (Keluaran): Berfungsi untuk menampilkan hasil komputasi yang telah dilakukan oleh komputer.</p>
+            <button id="prevButton" onclick="prevPage()">Previous</button>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
+        <div id="page5" class="page">
+            <h1>C. Prinsip dan Cara Kerja Komputer</h1>
+            <h2>Cara Kerja Komputer</h2>
+            <p>a. Input: Memasukkan data ke komputer dengan input device.</p>
+            <p>b. Processing: Melakukan operasi atau pengolahan terhadap data.</p>
+            <p>c. Storage: Penyimpanan data, program atau output hasil pengolahan.</p>
+            <p>d. Output: Hasil pengolahan data dalam bentuk informasi.</p>
+            <h2>D. Alat Kerja Perakitan Komputer</h2>
+            <p>Alat-alat yang diperlukan dalam perakitan komputer.</p>
+            <div class="img-container">
+                <img src="images/alat.jpg" alt="alat">
+            </div>
+            <p>Bahan-Bahan yang digunakan dalam perakitan komputer.</p>
+            <div class="img-container">
+                <img src="images/bahan.jpg" alt="bahan">
+            </div>
+            <div class="img-container">
+                <img src="images/bahan2.jpg" alt="bahan">
+            </div>
+            <h2>E. Cara Melakukan Perakitan Komputer</h2>
+            <p>a. Pasang Jumper Mainboard</p>
+            <div class="img-container">
+                <img src="images/jumper.jpg" alt="bahan">
+            </div>
+            <p>Bacalah terlebih dahulu buku manual (Manual Guide Book) mainboard agar anda tau dimana jumper akan
+                diletakkan. Jumper merupakan komponen kecil yang diletakkan pada mainboard sebagai pengatur CPU dan
+                tegangan yang masuk ke dalam mainboard. Pengaturan jumper yang salah bisa berakibat rusaknya prosesor.
+                Jadi berhati-hatilah saat memasang jumper ini dengan benar.</p>
+            <p>b. Pasang Prosesor</p>
+            <div class="img-container">
+                <img src="images/prosesor.jpg" alt="bahan">
+            </div>
+            <p>Pemasangan prosesor pada mainboard akan lebih mudah dilakukan apabila mainboard belum terpasang pada
+                casing. Hal-hal yang perlu diperhatikan saat memasang prosesor yaitu, mentukan terlebih dahulu posisi 1
+                pin. Biasanya terdapat tanda pada prosesor pada setiap titik (gambar 1.0), masukkan prosesor tersebut
+                sesuai dengan arah pin, angkat tuas pengunci dalam posisi tegak dan terbuka kemudian pasang prosesor
+                pada soket prosesor yang ada pada mainboard (gambar 1.1). Setelah prosesor terpasang pada mainboard,
+                maka kembalikan pengunci tuas ke arah bawah untuk menutup prosesor.</p>
+            <p>c. Pasang Heatsink (Kipas prosesor)</p>
+            <div class="img-container">
+                <img src="images/heatsink.jpg" alt="bahan">
+            </div>
+            <p>Prosesor memiliki suhu yang panas pada saat komputer dalam kondisi menyala. Oleh karena itu diperlukan
+                kipas untuk mengurangi hawa panasnya. Heatsink adalah kipas yang dipasang tepat di atas prosesor. Untuk
+                memasangnya cukup mudah, hanya tinggal memasukkan kaki-kakinya saja ke dalam mainboard dan dikencangkan.
+                Heatsink dibekali sebuah konektor yang disambungkan pada mainboard sebagai dayanya.</p>
+            <p>d. Pasang Memori</p>
+            <div class="img-container">
+                <img src="images/ram.jpg" alt="bahan">
+            </div>
+            <p>Umumnya memori yang digunakan pada saat ini adalah berjenis RAM (DDR2 dan DDR3). Nah, pastikan terlebih
+                dahulu jika socket memori pada mainboard anda adalah tipe socket dengan jenis ini agar sesuai. Cara
+                memasang memori cukup mudah, yaitu dengan menyesuaikan cekungan yang ada pada memori dengan slot pada
+                mainboard.</p>
+            <p>e. Pasang Mainboard pada Casing</p>
+            <div class="img-container">
+                <img src="images/pasang.jpg" alt="bahan">
+            </div>
+            <p>Langkah selanjutnya adalah memasang mainboard pada casing. Cara memasang mainboard pada casing adalah
+                dengan cara menentukan dudukan (mounting) mainboard pada casing. Jika dudukannya telah terpasang, maka
+                Anda memerlukan beberapa perkakas seperti obeng untuk mengencangkan sekrupnya. Atur letak posisi I/O
+                dengan benar. Hati-hati dan pelan-pelan saat memasangnya agar mainboard tidak rusak/patah.</p>
+            <p>f. Pasang Kartu VGA</p>
+            <div class="img-container">
+                <img src="images/vga.jpg" alt="bahan">
+            </div>
+            <p>Setelah mainboard terpasang pada casing, langkah selanjutnya adalah memasang VGA Card. Cara memasang VGA
+                Card pada dasarnya hampir sama dengan cara memasang memori yaitu dengan menyesuaikan cekungan slot yang
+                ada pada mainboard. Penempatan VGA Card pada mainboard bisa anda lihat pada tabel Mainboard Manual
+                Diagram Instruksi yang menunjukkan Slot AGP.</p>
+            <p>g. Pasang Catu Daya</p>
+            <div class="img-container">
+                <img src="images/powersuply.jpg" alt="bahan">
+            </div>
+            <p>Langkah selanjutnya adalah memasang catu daya atau catu daya. Power supply terletak di bagian pojok atas
+                di bagian belakang casing. Cara memasangnya cukup mudah, yaitu dengan menempatkannya pada tempat (bays)
+                power supply yang sudah disediakan kemudian mengencangkan baut-bautnya dengan obeng. Jangan sampai
+                goyang dan pastikan tidak dengan posisi terbalik (terbalik).</p>
+            <p>h. Pasang Kabel-kabel Motherboard</p>
+            <div class="img-container">
+                <img src="images/kabel1.jpg" alt="bahan">
+            </div>
+            <div class="img-container">
+                <img src="images/kabel2.jpg" alt="bahan">
+            </div>
+            <p>Sambungkan semua kabel-kabel yang tersedia pada power supply ke mainboard untuk memberikan daya. Atur
+                sesuai gambar diatas dan sisakan kabel untuk HDD dan ODD.</p>
+            <p>i. Pasang ODD (Optical Device Drive) dan HDD (Harddisk Drive)</p>
+            <p>Setelah kabel-kabel power supply terpasang pada mainboard, langkah selanjutnya adalah memasang Hard Drive
+                pada casing. Sesuaikan masing-masing harddisk sesuai dengan ruangan drive pada casing (bays). Biasanya
+                untuk DVD diletakkan pada casing bagian paling atas depan, sedangkan HDD terdapat bay tersendiri. Buka
+                penutup bays drive pada casing lalu pasang dan kencangkan baut-bautnya. Jika harddisk telah terpasang
+                sempurna, kemudian colokkan kabel dari power supply ke masing-masing harddisk (gambar diatas).</p>
+            <p>j. Finishing/Penyelesaian</p>
+            <p> Nah, setelah semua kabel dan konektor telah tersambung, begitu pula dengan mainboard pada casing. Kini
+                saatnya melakukan finishing dengan memeriksa seluruh fungsi dari komponen-komponen yang telah dirakit
+                menjadi sebuah komputer PC. Langkah-langkah pengecekan yang dapat Anda lakukan adalah sebagai berikut:
+            <p>• Pasang penutup casing dengan sempurna menggunakan perkakas obeng.
+
+            </p>• . Pasang kabel port VGA ke monitor dan colokkan kabel power monitor.<p>
+
+            </p>• Colokkan kabel power CPU ke soket/saklar listrik dan nyalakan.</p>
+
+
+            </p>
+            <p>k. Uji PC</p>
+            <p>Saat monitor dan PC dinyalakan, jika tidak ada masalah, maka selanjutnya PC akan masuk pada mode POST dan
+                Anda tinggal melakukan pengaturan setting BIOS. Masalah yang sering terjadi adalah kesalahan pemasangan
+                kabel, pemasangan komponen yang tidak pas dan lain sebagainya. Biasanya kesalahan tersebut akan langsung
+                terdeteksi dan PC akan mengeluarkan tanda berupa bunyi bip dengan nada yang teratur. Periksa kembali
+                pemasangan kabel dan periksa posisi komponen-komponennya.</p>
+            <button id="prevButton" onclick="prevPage()">Previous</button>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
+        <div id="page6" class="page">
+            <h1>Kuis</h1>
+            <div class="quiz-question">
+                <h3>1. Apa itu komputer?</h3>
+                <input type="radio" name="question1" value="a"> Perangkat elektronik<br>
+                <input type="radio" name="question1" value="b"> Alat tulis<br>
+                <input type="radio" name="question1" value="c"> Buku<br>
+            </div>
+            <div class="quiz-question">
+                <h3>2. Apa itu perangkat keras?</h3>
+                <input type="radio" name="question2" value="a"> Perangkat lunak<br>
+                <input type="radio" name="question2" value="b"> Komponen fisik komputer<br>
+                <input type="radio" name="question2" value="c"> Jaringan komputer<br>
+            </div>
+            <div class="quiz-question">
+                <h3>3. Apa itu komputer tablet?</h3>
+                <input type="radio" name="question3" value="a"> Komputer desktop<br>
+                <input type="radio" name="question3" value="b"> Laptop<br>
+                <input type="radio" name="question3" value="c"> Komputer dengan layar sentuh<br>
+            </div>
+            <div class="quiz-question">
+                <h3>4. Bagian mana dari arsitektur von Neumann yang berfungsi untuk menyimpan data?</h3>
+                <input type="radio" name="question4" value="a"> CPU<br>
+                <input type="radio" name="question4" value="b"> Input<br>
+                <input type="radio" name="question4" value="c"> Memory<br>
+                <input type="radio" name="question4" value="d"> Output<br>
+            </div>
+            <div class="quiz-question">
+                <h3>5. Apa yang dilakukan pada tahap pemrosesan dalam cara kerja komputer?</h3>
+                <input type="radio" name="question5" value="a"> Memasukkan data<br>
+                <input type="radio" name="question5" value="b"> Melakukan operasi pada data<br>
+                <input type="radio" name="question5" value="c"> Menyimpan data<br>
+                <input type="radio" name="question5" value="d"> Menampilkan data<br>
+            </div>
+            <button id="prevButton" onclick="prevPage()">Previous</button>
+            <button onclick="checkQuiz()">Submit Kuis</button>
+        </div>
+
+        <div id="page7" class="page">
+            <h1>Hasil Kuis</h1>
+            <p id="resultScore">Nilai Anda akan ditampilkan di sini.</p>
+            <p id="resultMessage"></p>
+            <button id="prevButton" onclick="prevPage()">Previous</button>
+            <button onclick="nextPage()">Next</button>
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+
+
+<script>
+    function displayQuizResult() {
+        const score = localStorage.getItem('quizScore');
+        if (score) {
+            document.getElementById('resultScore').innerText = `Nilai Anda: ${score}`;
+            if (score < 80) {
+                document.getElementById('resultMessage').innerText = 'Nilai Anda kurang dari 80. Silakan coba lagi.';
+            } else {
+                document.getElementById('resultMessage').innerText = '';
+            }
+        } else {
+            document.getElementById('resultScore').innerText = 'Nilai tidak ditemukan.';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        displayQuizResult();
+    });
+</script>
